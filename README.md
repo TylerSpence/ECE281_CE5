@@ -29,5 +29,12 @@ I calculated the hexidecimal values for the above lines of code
 ```
 
 The resulting waveform is as follows
-[alt tag!] (https://raw.githubusercontent.com/TylerSpence/ECE281_CE5/master/waveformone.png)
+![alt tag] (https://raw.githubusercontent.com/TylerSpence/ECE281_CE5/master/waveformone.png)
 
+##Part three
+First, I filled in the tables in accordance with what the ORI command does as seen bellow.
+![alt tag] (https://raw.githubusercontent.com/TylerSpence/ECE281_CE5/master/table.PNG)
+
+
+This resulted in the following waveform
+![alt tag] (https://raw.githubusercontent.com/TylerSpence/ECE281_CE5/master/waveformpartthree.png)
