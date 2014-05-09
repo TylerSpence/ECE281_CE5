@@ -58,6 +58,10 @@ This resulted in the following waveform
 ![alt tag] (https://raw.githubusercontent.com/TylerSpence/ECE281_CE5/master/waveformpartthree.png)
 
 The new command works, as noticeable in the time after 240ns. 8000 is or'ed with 7, resulting in 8007, as predicted. 
+##Dificulties
+I had issues getting the waveform to work because of not knowing to name it the right thing, I ended up fixing it as described below.
+
+I started out by tring to use a 3 input mux instead of two as can be seen in an earlier commit, but i decided that it was simpler and more elegant to just use two. 
 ##Documentation
 C3C Eric Wardner and JP Terragnoli helped me get the appropriate values on the waveform by navigating through the options.
 
