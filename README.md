@@ -32,9 +32,20 @@ The resulting waveform is as follows
 ![alt tag] (https://raw.githubusercontent.com/TylerSpence/ECE281_CE5/master/waveformone.png)
 
 ##Part three
-First, I filled in the tables in accordance with what the ORI command does as seen bellow.
+Fist I modified the diagram by adding a zero extend and a second mux within the ALU logic section as seen below. 
+
+![alt tag] (https://raw.githubusercontent.com/TylerSpence/ECE281_CE5/master/diagram.jpg)
+
+Then, I filled in the tables in accordance with what the ORI command does as seen below.
+
 ![alt tag] (https://raw.githubusercontent.com/TylerSpence/ECE281_CE5/master/table.PNG)
 
+Then I had to modify the vhd code to apply the changes that I designed.
 
+
+I then converted the desired command into hex, as seen below.
+```
+0x36538000
+```
 This resulted in the following waveform
 ![alt tag] (https://raw.githubusercontent.com/TylerSpence/ECE281_CE5/master/waveformpartthree.png)
