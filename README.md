@@ -17,9 +17,13 @@ sw $s2, 0x54($0)
 ```
 
 ##Part two
-
-Hex
+I calculated the hexidecimal values for the above lines of code
+```
 0x2010002C
+
 0x2011FFDB
+
 0x02119020
+
 0xAC120054
+```
