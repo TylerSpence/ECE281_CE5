@@ -57,7 +57,7 @@ I then converted the desired command into hex, as seen below.
 This resulted in the following waveform
 ![alt tag] (https://raw.githubusercontent.com/TylerSpence/ECE281_CE5/master/waveformpartthree.png)
 
-
+The new command works, as noticeable in the time after 240ns. 8000 is or'ed with 7, resulting in 8007, as predicted. 
 ##Documentation
 C3C Eric Wardner and JP Terragnoli helped me get the appropriate values on the waveform by navigating through the options.
 
