@@ -27,3 +27,7 @@ I calculated the hexidecimal values for the above lines of code
 
 0xAC120054
 ```
+
+The resulting waveform is as follows
+[alt tag!] (https://raw.githubusercontent.com/TylerSpence/ECE281_CE5/master/waveformone.png)
+
