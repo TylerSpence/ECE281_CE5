@@ -32,6 +32,9 @@ I calculated the hexidecimal values for the above lines of code.
 The resulting waveform is as follows
 ![alt tag] (https://raw.githubusercontent.com/TylerSpence/ECE281_CE5/master/waveformone.png)
 
+The waveform starts at 200ns because of a delay in the testbench coding. 
+
+The waveform begins by loading 2c (44 in hex) and then db (which when preceeded by the f's is -37) to rd1 and rd2 respectively then adds them together and stores the result in wd, which results in 7 (the correct number) at 220ns. It then stores it at address 054 as seen at 230ns on wd into rd2 (which corresponds to s2). 
 ##Part three
 Fist I modified the diagram by adding a zero extend and a second mux within the ALU logic section as seen below. 
 
@@ -43,6 +46,9 @@ Then, I filled in the tables in accordance with what the ORI command does as see
 
 Then I had to modify the vhd code to apply the changes that I designed.
 
+This was accomplished by modifying every instance of alusrc to make it two bits wide so that it could control both the existing mux and the new mux. This also meant modifying the functionality codes for the instruction to include a second bit for regdst. 
+
+The only other essential change was adding in the second mux in the ALU logic and declaring a new signal to appropriately use it. 
 
 I then converted the desired command into hex, as seen below.
 ```
