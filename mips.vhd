@@ -25,7 +25,8 @@ entity controller is -- single cycle control decoder
   port(op, funct:          in  STD_LOGIC_VECTOR(5 downto 0);
        zero:               in  STD_LOGIC;
        memtoreg, memwrite: out STD_LOGIC;
-       pcsrc, alusrc:      out STD_LOGIC;
+       pcsrc:        out std_logic; 
+		 alusrc:      out STD_LOGIC_vector(1 downto 0);
        regdst, regwrite:   out STD_LOGIC;
        jump:               out STD_LOGIC;
        alucontrol:         out STD_LOGIC_VECTOR(2 downto 0));
@@ -35,7 +36,8 @@ library IEEE; use IEEE.STD_LOGIC_1164.all;
 entity maindec is -- main control decoder
   port(op:                 in  STD_LOGIC_VECTOR(5 downto 0);
        memtoreg, memwrite: out STD_LOGIC;
-       branch, alusrc:     out STD_LOGIC;
+       branch:   out std_logic;
+		 alusrc:     out STD_LOGIC_vector(1 downto 0);
        regdst, regwrite:   out STD_LOGIC;
        jump:               out STD_LOGIC;
        aluop:              out  STD_LOGIC_VECTOR(1 downto 0));
@@ -52,7 +54,8 @@ library IEEE; use IEEE.STD_LOGIC_1164.all; use IEEE.STD_LOGIC_ARITH.all;
 entity datapath is  -- MIPS datapath
   port(clk, reset:        in  STD_LOGIC;
        memtoreg, pcsrc:   in  STD_LOGIC;
-       alusrc, regdst:    in  STD_LOGIC;
+       alusrc:    in std_logic_vector(1 downto 0);
+		 regdst:    in  STD_LOGIC;
        regwrite, jump:    in  STD_LOGIC;
        alucontrol:        in  STD_LOGIC_VECTOR(2 downto 0);
        zero:              out STD_LOGIC;
@@ -128,13 +131,7 @@ entity mux2 is -- two-input multiplexer
        y:      out STD_LOGIC_VECTOR(width-1 downto 0));
 end;
 
-library IEEE; use IEEE.STD_LOGIC_1164.all;
-entity mux3 is -- two-input multiplexer
-  generic(width: integer);
-  port(d0, d1, d2: in  STD_LOGIC_VECTOR(width-1 downto 0);
-       s:      in  STD_LOGIC_VECTOR(1 downto 0);
-       y:      out STD_LOGIC_VECTOR(width-1 downto 0));
-end;
+
 
 ---------------------------------------------------------
 -- Architecture Definitions
@@ -145,7 +142,8 @@ architecture struct of mips is
     port(op, funct:          in  STD_LOGIC_VECTOR(5 downto 0);
          zero:               in  STD_LOGIC;
          memtoreg, memwrite: out STD_LOGIC;
-         pcsrc, alusrc:      out STD_LOGIC;
+         pcsrc:       out std_logic;
+			alusrc:      out STD_LOGIC_vector(1 downto 0);
          regdst, regwrite:   out STD_LOGIC;
          jump:               out STD_LOGIC;
          alucontrol:         out STD_LOGIC_VECTOR(2 downto 0));
@@ -153,7 +151,8 @@ architecture struct of mips is
   component datapath
     port(clk, reset:        in  STD_LOGIC;
          memtoreg, pcsrc:   in  STD_LOGIC;
-         alusrc, regdst:    in  STD_LOGIC;
+         alusrc:     in std_logic_vector(1 downto 0); 
+			regdst:    in  STD_LOGIC;
          regwrite, jump:    in  STD_LOGIC;
          alucontrol:        in  STD_LOGIC_VECTOR(2 downto 0);
          zero:              out STD_LOGIC;
@@ -162,14 +161,15 @@ architecture struct of mips is
          aluout, writedata: inout STD_LOGIC_VECTOR(31 downto 0);
          readdata:          in  STD_LOGIC_VECTOR(31 downto 0));
   end component;
-  signal memtoreg, alusrc, regdst, regwrite, jump, pcsrc: STD_LOGIC;
+  signal memtoreg, regdst, regwrite, jump, pcsrc: STD_LOGIC;
+  signal alusrc: std_logic_vector(1 downto 0);
   signal zero: STD_LOGIC;
   signal alucontrol: STD_LOGIC_VECTOR(2 downto 0);
 begin
   cont: controller port map(instr(31 downto 26), instr(5 downto 0),
-                            zero, memtoreg, memwrite, pcsrc, alusrc,
+                            zero, memtoreg, memwrite, pcsrc, alusrc(1 downto 0),
 									 regdst, regwrite, jump, alucontrol);
-  dp: datapath port map(clk, reset, memtoreg, pcsrc, alusrc, regdst,
+  dp: datapath port map(clk, reset, memtoreg, pcsrc, alusrc(1 downto 0), regdst,
                         regwrite, jump, alucontrol, zero, pc, instr,
 								aluout, writedata, readdata);
 end;
@@ -178,7 +178,8 @@ architecture struct of controller is
   component maindec
     port(op:                 in  STD_LOGIC_VECTOR(5 downto 0);
          memtoreg, memwrite: out STD_LOGIC;
-         branch, alusrc:     out STD_LOGIC;
+         branch:    out Std_logic; 
+			alusrc:     out STD_LOGIC_vector(1 downto 0);
          regdst, regwrite:   out STD_LOGIC;
          jump:               out STD_LOGIC;
          aluop:              out  STD_LOGIC_VECTOR(1 downto 0));
@@ -199,24 +200,24 @@ begin
 end;
 
 architecture behave of maindec is
-  signal controls: STD_LOGIC_VECTOR(8 downto 0);
+  signal controls: STD_LOGIC_VECTOR(9 downto 0);
 begin
   process(op) begin
     case op is
-      when "000000" => controls <= "110000010"; -- Rtype
-      when "100011" => controls <= "101001000"; -- LW
-      when "101011" => controls <= "001010000"; -- SW
-      when "000100" => controls <= "000100001"; -- BEQ
-      when "001000" => controls <= "101000000"; -- ADDI
-      when "000010" => controls <= "000000100"; -- J
-		when "001101" => controls <= "101100011"; -- ORI
-      when others   => controls <= "---------"; -- illegal op
+     when "000000" => controls <= "1100000010"; -- Rtype
+      when "100011" => controls <= "1001001000"; -- LW
+      when "101011" => controls <= "0001010000"; -- SW
+      when "000100" => controls <= "0000100001"; -- BEQ
+      when "001000" => controls <= "1001000000"; -- ADDI
+      when "000010" => controls <= "0000000100"; -- J
+		when "001101" => controls <= "1011000011"; -- ORI
+      when others   => controls <= "----------"; -- illegal op
     end case;
   end process;
 
-  regwrite <= controls(8);
-  regdst   <= controls(7);
-  alusrc   <= controls(6);
+  regwrite <= controls(9);
+  regdst   <= controls(8);
+  alusrc   <= controls(7 downto 6); --had to edit because of added bit to alusrc
   branch   <= controls(5);
   memwrite <= controls(4);
   memtoreg <= controls(3);
@@ -283,15 +284,11 @@ architecture struct of datapath is
          s:      in  STD_LOGIC;
          y:      out STD_LOGIC_VECTOR(width-1 downto 0));
 			end component;
-	component mux3 generic(width: integer);
-    port(d0, d1, d2: in  STD_LOGIC_VECTOR(width-1 downto 0);
-         s:      in  STD_LOGIC_Vector(1 downto 0);
-         y:      out STD_LOGIC_VECTOR(width-1 downto 0));
-  end component;
+	
   signal writereg: STD_LOGIC_VECTOR(4 downto 0);
   signal pcjump, pcnext, pcnextbr, pcplus4, pcbranch: STD_LOGIC_VECTOR(31 downto 0);
   signal signimm, zeroimm, signimmsh: STD_LOGIC_VECTOR(31 downto 0);
-  signal srca, srcb, result: STD_LOGIC_VECTOR(31 downto 0);
+  signal nextdata,srca, srcb, result: STD_LOGIC_VECTOR(31 downto 0);
 begin
   -- next PC logic
   pcjump <= pcplus4(31 downto 28) & instr(25 downto 0) & "00";
@@ -309,10 +306,11 @@ begin
                                       regdst, writereg);
   resmux: mux2 generic map(32) port map(aluout, readdata, memtoreg, result);
   se: signext port map(instr(15 downto 0), signimm);
-  ze: zeroext port map(instr(15 downto 0), zeroimm);
+  ze: zeroext port map(instr(15 downto 0), zeroimm); --added zero extender
 
   -- ALU logic
-  srcbmux: mux3 generic map(32) port map(writedata, signimm, zeroimm, alusrc, srcb);
+  newmux: mux2 generic map(32) port map(signimm, zeroimm, alusrc(1), nextdata); --second mux
+  srcbmux: mux2 generic map(32) port map(writedata, nextdata, alusrc(0), srcb);  --had to edit mux here
   mainalu:  alu port map(srca, srcb, alucontrol, aluout, zero);
 end;
 
@@ -389,12 +387,12 @@ begin
   y <= d0 when s = '0' else d1;
 end;
 
-architecture behave of mux3 is
-begin
-  process(s) begin
-      if s = "00" then y <= d0 ;
-       elsif s = "01" then y <= d1 ;
-  else y <= d2 ;
-  end if;
-  end process;
-end;
+--architecture behave of mux3 is
+--begin
+  --process(s) begin
+  --    if s = "00" then y <= d0 ;
+  --     elsif s = "01" then y <= d1 ;
+ -- else y <= d2 ;
+ -- end if;
+ -- end process;
+--end;
